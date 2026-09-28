@@ -1,0 +1,27 @@
+# Local agent instructions
+AGENTS.md
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local data
+data/*
+!data/.gitkeep
+
+# Model weights
+*.pt
+
+# Node.js
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# macOS
+.DS_Store

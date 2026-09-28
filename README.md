@@ -6,7 +6,7 @@ CCTV·영상 기반 산불 탐지 및 화재 위치 추정 모니터링 프로�
 
 ## 현재 상태
 
-초기 저장소 구조와 PostgreSQL 개발 실행 설정을 준비한 단계입니다. Backend, Frontend, AI 기능은 아직 구현되지 않았으며 API, AI 결과 JSON, ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
+초기 저장소 구조와 PostgreSQL 개발 실행 설정을 준비하고, Backend 라이브러리(express, pg, dotenv)를 설치한 단계입니다. Backend 서버 및 DB 연결 코드, Frontend, AI 기능은 아직 구현되지 않았으며 API, AI 결과 JSON, ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
 
 ## 시스템 흐름
 
@@ -55,6 +55,25 @@ wildfire-detection-geolocation/
 Git은 빈 폴더를 추적하지 않으므로 GitHub에 폴더가 표시되도록 `.gitkeep`을 넣어두었습니다. 해당 폴더에 Git으로 관리할 실제 파일을 추가한 뒤에는 `.gitkeep`을 삭제해도 됩니다.
 
 `data/`의 실제 영상·데이터 파일과 YOLO 가중치(`*.pt`)는 `.gitignore`에 제외 대상으로 지정되어 있어 GitHub에 올라가지 않습니다. 필요한 파일은 별도로 전달받아 로컬에 배치합니다. `data/.gitkeep`은 예외적으로 Git에 포함되므로 폴더 유지를 위해 남겨둡니다.
+
+## Backend 라이브러리 설치
+
+Node.js와 npm이 설치되어 있어야 합니다. 프로젝트를 내려받은 뒤 프로젝트 루트에서 다음 명령을 실행합니다.
+
+```bash
+cd backend
+npm ci
+```
+
+`npm ci`는 `package.json`과 `package-lock.json`을 기반으로 기록된 버전의 라이브러리를 설치합니다. `npm init`이나 라이브러리별 설치 명령을 다시 실행할 필요는 없습니다.
+
+- `express`: API 서버 구성
+- `pg`: PostgreSQL 연결
+- `dotenv`: `.env` 파일의 환경변수 읽기
+
+`package.json`과 `package-lock.json`은 Git으로 함께 관리합니다. 설치된 라이브러리가 들어가는 `node_modules/`는 `.gitignore`로 제외합니다. 현재 서버 실행 코드는 없으므로 설치만으로 서버가 실행되지는 않습니다.
+
+아래 PostgreSQL 실행 명령은 프로젝트 루트 기준입니다. 위 명령을 실행했다면 `cd ..`로 돌아온 뒤 진행합니다.
 
 ## 개발용 PostgreSQL 실행
 

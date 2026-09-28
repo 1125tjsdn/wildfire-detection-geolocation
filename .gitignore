@@ -1,27 +1,9 @@
-# Local agent instructions
-AGENTS.md
-
-# Environment variables
+# 환경변수
 .env
-.env.*
 !.env.example
 
-# Local data
+# 실제 데이터 제외
 data/*
-!data/.gitkeep
 
-# Model weights
-*.pt
-
-# Node.js
-node_modules/
-dist/
-
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-
-# macOS
+# macOS 파일
 .DS_Store

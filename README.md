@@ -26,7 +26,7 @@ AI와 Frontend는 Backend를 통해 데이터를 주고받습니다. 영상 파�
 - Backend: Node.js, Express, PostgreSQL
 - Frontend: JavaScript, Vue.js
 - AI: Python, YOLO, 필요 시 OpenCV
-- 실행 환경: Docker, Docker Compose
+- 실행 환경: Docker
 
 ## 팀 역할
 

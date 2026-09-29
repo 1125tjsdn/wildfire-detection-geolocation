@@ -1,9 +1,8 @@
 # 환경변수
 .env
 
-# Backend 자료
+# Backend 개발 자료, 나중에 뺄 것
 /backend/개발준비_정리.md
-spec.md
 
 # 실제 데이터 제외
 data/*

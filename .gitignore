@@ -1,8 +1,9 @@
 # 환경변수
 .env
 
-# 개인 공부 및 발표 준비 기록
+# Backend 자료
 /backend/개발준비_정리.md
+spec.md
 
 # 실제 데이터 제외
 data/*

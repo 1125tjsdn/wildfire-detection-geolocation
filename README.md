@@ -8,13 +8,54 @@ YOLO 기반 화재·연기 탐지 모델을 활용하여 영상에서 화재·�
 
 초기 저장소 구조와 PostgreSQL 개발 실행 설정을 준비하고, Backend 라이브러리(express, pg, dotenv) 설치 및 기본 코드 작성을 마친 단계입니다. 서버 실행 시 PostgreSQL 연결을 먼저 검증한 후 구동되는 기본 뼈대가 갖추어졌습니다.
 
-아직 기능별 비즈니스 API, DB 테이블 생성 스크립트(`sql/init.sql`), Frontend, AI 기능은 구현 전이며, 데이터 규격(JSON)과 ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
+아직 기능별 비즈니스 API, DB 테이블 생성 스크립트(`sql/init.sql`), Frontend, AI 기능은 구현 전입니다. AI → Backend 결과 전달 JSON의 기본 형식은 아래와 같이 합의했으며, Frontend 응답 규격과 ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
 
 ## 시스템 흐름
 
 ![FireGuard AI 시스템 흐름도](docs/system-flow.png)
 
 AI와 Frontend는 Backend를 통해 데이터를 주고받습니다. 영상 파일은 서버 파일시스템에 저장하고 DB에는 경로와 메타데이터를 저장합니다. 연속 탐지는 하나의 이벤트로 묶는 방향이며, 구체적인 기준은 추후 정합니다.
+
+## AI → Backend 결과 전달 JSON
+
+AI 모듈의 탐지 결과와 위치 추정 결과는 다음 JSON 형식으로 Backend에 전달하기로 했습니다. 아래 값은 예시이며, 이 형식의 합의가 수신 API 구현 완료를 의미하지는 않습니다. Backend가 처리한 Frontend용 응답 JSON은 별도로 정의합니다. 상세 명세는 [API_SPEC.md의 AI 결과 수신 항목](docs/API_SPEC.md#4-ai--backend-결과-수신-api)에서 관리하며, 형식 변경 시 이 README의 예시도 함께 갱신합니다.
+
+```json
+{
+  "camera_id": 1,
+  "video_id": 3,
+  "timestamp": "2026-10-01T18:10:00",
+  "detection": {
+    "class": "fire",
+    "confidence": 0.94,
+    "bbox": {
+      "x1": 420,
+      "y1": 210,
+      "x2": 550,
+      "y2": 300
+    }
+  },
+  "location_estimation": {
+    "latitude": 35.123456,
+    "longitude": 128.123456,
+    "error_range_m": 50
+  }
+}
+```
+
+| 필드 | 의미 |
+| --- | --- |
+| `camera_id` | 카메라 식별자 |
+| `video_id` | 영상 식별자 |
+| `timestamp` | 결과에 연결되는 시각 문자열 |
+| `detection.class` | 탐지 클래스 (예시: `fire`) |
+| `detection.confidence` | 탐지 신뢰도 |
+| `detection.bbox` | 탐지 영역의 두 좌표 쌍 (`x1`, `y1`, `x2`, `y2`) |
+| `location_estimation.latitude` | 추정 화재 위치의 위도 |
+| `location_estimation.longitude` | 추정 화재 위치의 경도 |
+| `location_estimation.error_range_m` | 위치 추정 오차 범위 (미터) |
+
+좌표는 실제 화점의 확정 위치가 아닌 추정 결과입니다. 예시의 `timestamp`에는 시간대가 없으므로 시각 기준(촬영 시각 또는 분석 시각 등)과 시간대는 추가로 정해야 합니다. bbox의 좌표 기준·단위, 오차 범위의 구체적인 의미, 위치 추정 실패 시 표현도 별도 협의 사항입니다.
 
 ## 기술 스택
 

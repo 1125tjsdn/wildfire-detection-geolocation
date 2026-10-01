@@ -4,7 +4,7 @@
 - `main`: 최종 배포용 안정화 브랜치
 - `develop`: 통합 테스트 브랜치 (모든 작업은 여기로 모입니다)
 - `feature/파트명/#이슈번호-짧은설명`: 개인 기능 작업 브랜치
-  - 파트명: `fe`(프론트), `be`(백엔드), `ai`(AI/알고리즘)
+  - 파트명: `frontend`(프론트), `backend`(백엔드), `ai`(AI/알고리즘)
   - *(예시)* `feature/ai/#8-dem-ray-marching`
   - *(예시)* `feature/be/#12-api-setup`
 

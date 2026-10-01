@@ -6,7 +6,7 @@
 - `feature/파트명/#이슈번호-짧은설명`: 개인 기능 작업 브랜치
   - 파트명: `frontend`(프론트), `backend`(백엔드), `ai`(AI/알고리즘)
   - *(예시)* `feature/ai/#8-dem-ray-marching`
-  - *(예시)* `feature/be/#12-api-setup`
+  - *(예시)* `feature/backend/#12-api-setup`
 
 ### 💬 커밋(Commit) 메시지 규칙
 - `Feat`: 새로운 기능 추가

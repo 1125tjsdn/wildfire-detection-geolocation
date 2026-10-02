@@ -2,7 +2,7 @@ const path = require('node:path');
 const { Pool } = require('pg');
 
 // 실행 위치와 관계없이 프로젝트 루트의 .env를 읽습니다.
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env'), quiet: true });
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env'), quiet: true });
 
 for (const name of ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']) {
   if (!process.env[name]) {

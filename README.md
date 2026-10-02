@@ -60,7 +60,7 @@ AI 모듈의 탐지 결과와 위치 추정 결과는 다음 JSON 형식으로 B
 ## 기술 스택
 
 - Backend: Node.js, Express, PostgreSQL
-- Frontend: JavaScript, Vue.js
+- Frontend: JavaScript, Vue.js, Vite
 - AI: Python, YOLO, 필요 시 OpenCV
 - 실행 환경: Docker
 

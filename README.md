@@ -8,7 +8,7 @@ YOLO 기반 화재·연기 탐지 모델을 활용하여 영상에서 화재·�
 
 초기 저장소 구조와 PostgreSQL 개발 실행 설정을 준비하고, Backend 라이브러리(express, pg, dotenv) 설치 및 기본 코드 작성을 마친 단계입니다. 서버 실행 시 PostgreSQL 연결을 먼저 검증한 후 구동되는 기본 뼈대가 갖추어졌습니다.
 
-아직 기능별 비즈니스 API, DB 테이블 생성 스크립트(`sql/init.sql`), Frontend, AI 기능은 구현 전입니다. AI → Backend 결과 전달 JSON의 기본 형식은 아래와 같이 합의했으며, Frontend 응답 규격과 ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
+Frontend는 Vue 3와 Vite 기반으로 초기 프로젝트 구성 및 백엔드 API 프록시 설정을 마쳤습니다. 아직 기능별 비즈니스 API, DB 테이블 생성 스크립트(`sql/init.sql`), AI 모듈 연동은 구현 전입니다. AI → Backend 결과 전달 JSON의 기본 형식은 아래와 같이 합의했으며, Frontend 응답 규격과 ERD는 협의 예정입니다. 초기 입력은 제공된 녹화 영상을 사용하며, 실시간 CCTV는 접근 가능 여부에 따라 추가합니다.
 
 ## 시스템 흐름
 
@@ -83,13 +83,25 @@ wildfire-detection-geolocation/
 ├── backend/             # Backend
 │   ├── src/
 │   │   ├── app.js       # Express 앱 설정, 미들웨어, 공통 에러 처리
-│   │   ├── db.js        # PostgreSQL 연결 풀(Pool) 설정
+│   │   ├── config/
+│   │   │   └── db.js    # PostgreSQL 연결 풀(Pool) 설정
 │   │   ├── server.js    # DB 사전 검증 및 서버 기동/종료
 │   │   └── routes/
 │   │       └── index.js # API 라우터 (엔드포인트 등록)
 │   ├── package.json
 │   └── package-lock.json
-├── frontend/            # Frontend
+├── frontend/            # Frontend (Vue 3 + Vite)
+│   ├── src/
+│   │   ├── api/         # Backend API 통신 함수 모음
+│   │   ├── components/  # 대시보드 화면 UI 컴포넌트
+│   │   ├── utils/       # 공통 유틸리티 함수
+│   │   ├── App.vue      # 대시보드 메인 컴포넌트
+│   │   ├── main.js      # Vue 인스턴스 마운트
+│   │   └── style.css    # 기본 리셋 스타일
+│   ├── index.html       # 웹 진입점 HTML
+│   ├── vite.config.js   # Vite 및 Backend 프록시(/api) 설정
+│   ├── package.json
+│   └── package-lock.json
 ├── ai/                  # 탐지 및 위치 추정
 ├── sql/                 # DB 초기화 SQL (설계 후 작성)
 ├── data/                # 로컬 영상 및 데이터
@@ -173,18 +185,21 @@ Docker와 Docker Compose가 설치되어 있고 Docker가 실행 중이어야 �
 
 컨테이너를 삭제하고 다시 만들어도 기존 DB 볼륨을 연결하면 테이블과 데이터는 그대로 유지됩니다. 나중에 `init.sql`을 Docker의 초기화 스크립트로 연결하더라도 이 파일은 DB 저장 공간이 비어 있는 최초 초기화 때만 실행됩니다. 파일 수정이나 컨테이너 재생성만으로 기존 DB의 테이블 구조가 자동으로 변경되지는 않습니다. 현재는 `init.sql` 작성 및 자동 실행 연결 전입니다.
 
-## Frontend 개발 및 배포 계획
+## Frontend 라이브러리 설치 및 개발 서버 실행
 
-아래는 앞으로 적용할 계획입니다. 현재 Frontend 초기화, Vite 프록시 설정, Nginx 배포 설정은 구현 전입니다. 이 절의 실행 명령은 Frontend 초기 구성이 완료된 뒤 사용합니다.
+Frontend는 Vue 3와 JavaScript, Vite 기반으로 기본 프로젝트 구성을 완료했습니다. Backend 통신은 브라우저 내장 `fetch()`를 기본으로 사용하며, 개발 중 발생하는 `/api` 요청은 Vite 프록시 설정을 통해 Backend(`http://127.0.0.1:3000`)로 자동 전달됩니다. Nginx 배포 설정은 추후 서버 배포 시 적용합니다.
 
-### 1. Frontend 초기 구성
+### 1. Frontend 라이브러리 설치 및 실행
 
-- Vue 3와 JavaScript로 화면을 구현합니다.
-- Vue 공식 프로젝트 생성 도구(create-vue)로 `frontend/`에 Vite 기반 프로젝트를 구성합니다. 기존 파일을 확인한 뒤 초기화하며, 별도 Git 저장소를 만들지 않습니다.
-- Vite는 개발 서버 실행과 배포용 파일 생성을 담당합니다.
-- Backend 통신은 우선 브라우저 기본 기능인 `fetch()`를 사용합니다. Axios는 필수 의존성으로 추가하지 않습니다.
-- Vue Router와 상태 관리 도구는 화면 구성과 기능이 정해지면 필요에 따라 추가합니다.
-- `package.json`과 `package-lock.json`을 함께 관리하고, 팀원은 `frontend/`에서 `npm ci`로 라이브러리를 설치합니다.
+프로젝트를 내려받은 뒤 프로젝트 루트에서 다음 명령을 실행합니다.
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+`npm run dev` 실행 시 `http://localhost:5173`에서 프론트엔드 모니터링 화면이 실행됩니다. 종료는 터미널에서 `Ctrl + C`를 사용합니다.
 
 ### 2. Proxy(프록시)의 역할과 로컬 개발
 
@@ -198,14 +213,7 @@ Docker와 Docker Compose가 설치되어 있고 Docker가 실행 중이어야 �
                   Node.js Backend (127.0.0.1:3000)
 ```
 
-Frontend와 Backend는 각각 별도 터미널에서 실행합니다. 프로젝트 루트 기준으로 Frontend 개발 서버는 다음과 같이 실행할 예정입니다.
-
-```bash
-cd frontend
-npm run dev
-```
-
-`frontend/vite.config.js`에는 `/api` 요청을 Backend로 전달하는 규칙을 설정합니다. 예시는 다음과 같으며, 초기화 도구가 만든 기존 설정에 반영합니다.
+Frontend와 Backend는 각각 별도 터미널에서 실행합니다. `frontend/vite.config.js`에는 `/api` 요청을 Backend로 전달하는 규칙이 다음과 같이 설정되어 있습니다.
 
 ```javascript
 import { defineConfig } from 'vite';

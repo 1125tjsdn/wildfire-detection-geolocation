@@ -1,6 +1,6 @@
 async function start() {
-  // db.js에서 .env를 읽은 후 서버 포트를 확인합니다.
-  const pool = require('./db');
+  // config/db.js에서 .env를 읽은 후 서버 포트를 확인합니다.
+  const pool = require('./config/db');
   const app = require('./app');
   const port = Number(process.env.PORT || 3000);
 

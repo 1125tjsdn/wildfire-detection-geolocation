@@ -1,15 +1,13 @@
 # 환경변수
 .env
 
-# Backend 개발 자료, 나중에 뺄 것
-/backend/개발준비_정리.md
-
 # 실제 데이터 제외
 data/*
 
-# npm으로 설치한 라이브러리 폴더는 Git에서 제외
+# npm으로 설치한 라이브러리 폴더 및 빌드 결과물은 Git에서 제외
 # package.json과 package-lock.json은 공유하고, 각자 npm ci로 설치
 node_modules/
+dist/
 
 # macOS 파일
 .DS_Store
